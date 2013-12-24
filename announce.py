@@ -134,17 +134,6 @@ class Announce(object):#{{{
 #}}}
 
 
-def _parse_single_token(token):#{{{
-	if isinstance(token, str):
-		return int(token)
-	if isinstance(token, int):
-		return token
-	if isinstance(token, (set, frozenset)):
-		return frozenset(int(i) for i in token)
-	raise TypeError('%s unsupported' % token.__class__)
-#}}}
-
-
 class PrefixAnnounce(object):#{{{
 	def __init__(self):#{{{
 		self.mux2announce = dict()
@@ -202,6 +191,17 @@ class PrefixAnnounce(object):#{{{
 		pfxa.close()
 		return pfxa
 	#}}}
+#}}}
+
+
+def _parse_single_token(token):#{{{
+	if isinstance(token, str):
+		return int(token)
+	if isinstance(token, int):
+		return token
+	if isinstance(token, (set, frozenset)):
+		return frozenset(int(i) for i in token)
+	raise TypeError('%s unsupported' % token.__class__)
 #}}}
 
 
