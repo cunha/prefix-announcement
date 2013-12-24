@@ -1,9 +1,5 @@
 all:
-	pylint *.py test/*.py
-
-check:
-	python test/test.py
-	make clean
+	pylint *.py
 
 clean:
-	rm -rf *.pyc test/*.pyc
+	rm -rf *.pyc
