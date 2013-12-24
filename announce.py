@@ -71,15 +71,7 @@ class Announce(object):#{{{
 		elif NOPREPEND in self.status:
 			return NOPREPEND
 		else:
-			tokens = list()
-			for e in self.prepend:
-				if isinstance(e, int):
-					tokens.append(str(e))
-				elif isinstance(e, frozenset):
-					tokens.append('{%s}' % ' '.join(str(i) for i in sorted(e)))
-				else:
-					raise TypeError('%s unsupported' % e.__class__)
-			return ' '.join(tokens)
+			return dump_as_path_tuple(self.prepend)
 	#}}}
 
 	def __hash__(self):#{{{
@@ -146,6 +138,10 @@ class PrefixAnnounce(dict):#{{{
 		self.identifier = frozenset(self.items())
 	#}}}
 
+	def mux2str(self):#{{{
+		return dict((mux, str(a)) for mux, a in self.items())
+	#}}}
+
 	@staticmethod
 	def from_str(string):#{{{
 		pfxa = PrefixAnnounce()
@@ -173,6 +169,17 @@ def parse_as_path_string(string):#{{{
 	return tuple(prepend)
 #}}}
 
+def dump_as_path_tuple(tup):#{{{
+	tokens = list()
+	for e in tup:
+		if isinstance(e, int):
+			tokens.append(str(e))
+		elif isinstance(e, frozenset):
+			tokens.append('{%s}' % ' '.join(str(i) for i in sorted(e)))
+		else:
+			raise TypeError('%s unsupported' % e.__class__)
+	return ' '.join(tokens)
+#}}}
 
 def _parse_single_token(token):#{{{
 	if isinstance(token, str):
@@ -311,9 +318,6 @@ if __name__ == '__main__':
 
 
 
-# 	def to_mux2string(self):#{{{
-# 		return dict((mux, str(a)) for mux, a in self.mux2announce.items())
-# 	#}}}
 
 # 	@staticmethod
 # 	def from_mux2string(mux2string):#{{{
