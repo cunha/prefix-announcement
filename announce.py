@@ -134,21 +134,16 @@ class Announce(object):#{{{
 #}}}
 
 
-class PrefixAnnounce(object):#{{{
+class PrefixAnnounce(dict):#{{{
 	def __init__(self):#{{{
-		self.mux2announce = dict()
 		self.identifier = None
 	#}}}
 
 	def __setitem__(self, mux, spec):#{{{
 		if isinstance(spec, Announce):
-			self.mux2announce[mux] = spec
+			super(PrefixAnnounce, self).__setitem__(mux, spec)
 		else:
-			self.mux2announce[mux] = Announce(spec)
-	#}}}
-
-	def __getitem__(self, mux):#{{{
-		return self.mux2announce[mux]
+			super(PrefixAnnounce, self).__setitem__(mux, Announce(spec))
 	#}}}
 
 	def __hash__(self):#{{{
@@ -156,38 +151,23 @@ class PrefixAnnounce(object):#{{{
 		return hash(self.identifier)
 	#}}}
 
-	def __eq__(self, other):#{{{
-		return hash(self) == hash(other)
-	#}}}
-
 	def __str__(self):#{{{
 		return '; '.join('%s: %s' % (m, str(a))
-				for m, a in self.mux2announce.items())
+				for m, a in self.items())
 	#}}}
 
 	def close(self):#{{{
-		self.identifier = frozenset(self.mux2announce.items())
+		self.identifier = frozenset(self.items())
 	#}}}
-
-# 	def to_mux2string(self):#{{{
-# 		return dict((mux, str(a)) for mux, a in self.mux2announce.items())
-# 	#}}}
-
-# 	@staticmethod
-# 	def from_mux2string(mux2string):#{{{
-# 		pfxa = PrefixAnnounce()
-# 		for mux, string in mux2string.items():
-# 			pfxa[mux] = Announce(string)
-# 		pfxa.close()
-# 		return pfxann
-# 	#}}}
 
 	@staticmethod
 	def from_str(string):#{{{
 		pfxa = PrefixAnnounce()
 		for entry in string.split(';'):
-			for mux, prepstr in entry.split(':'):
-				pfxa[mux] = Announce(prepstr)
+			mux, prepstr = entry.split(':')
+			mux = mux.strip()
+			prepstr = prepstr.strip()
+			pfxa[mux] = Announce(prepstr)
 		pfxa.close()
 		return pfxa
 	#}}}
@@ -286,23 +266,25 @@ def test_announce():#{{{
 #}}}
 
 
+def test_prefix_announce():#{{{
+	a = Announce('704 {34,35 36} 47065')
+
+	pfxa = PrefixAnnounce()
+	pfxa['wisc'] = a
+	pfxa['gatech'] = a
+	pfxa.close()
+	s = str(pfxa)
+
+	pfxb = PrefixAnnounce.from_str(s)
+	assert pfxb == pfxa
+#}}}
+
+
 if __name__ == '__main__':
 	test_announce()
+	test_prefix_announce()
 
 
-# 	def deploy(self, prefix):#{{{
-# 		hooks.prefix_announce__deploy(self, prefix)
-# 		for mux, announce in self.mux2announce.items():
-# 			if WITHDRAWN in announce.status:
-# 				ctrlpfx.withdraw(prefix, mux)
-# 			elif NOPREPEND in announce.status:
-# 				ctrlpfx.unpoison(prefix, mux)
-# 			else:
-# 				assert isinstance(announce.prepend, tuple)
-# 				ctrlpfx.poison(prefix, mux, announce.prepend)
-# 			ctrlpfx.soft_reset(mux)
-# 	#}}}
-# 
 # 	def consistent(self, route):#{{{
 # 		withdrawn = (0 == sum(0 if WITHDRAWN in a.status else 1 
 # 				for a in self.mux2announce.values()))
@@ -325,5 +307,20 @@ if __name__ == '__main__':
 # 			# confuse the AS preference inference algorithm.
 # 			return False
 # 		return True
+# 	#}}}
+
+
+
+# 	def to_mux2string(self):#{{{
+# 		return dict((mux, str(a)) for mux, a in self.mux2announce.items())
+# 	#}}}
+
+# 	@staticmethod
+# 	def from_mux2string(mux2string):#{{{
+# 		pfxa = PrefixAnnounce()
+# 		for mux, string in mux2string.items():
+# 			pfxa[mux] = Announce(string)
+# 		pfxa.close()
+# 		return pfxann
 # 	#}}}
 
