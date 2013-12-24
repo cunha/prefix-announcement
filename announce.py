@@ -55,9 +55,11 @@ class Announce(object):#{{{
 			self.prepend = None
 			self.poisoned = set()
 		elif isinstance(spec, str):
-			self._parse_str(spec)
+			self.prepend = parse_as_path_string(spec)
+			self._parse_update()
 		elif isinstance(spec, (tuple, list)):
 			self._parse_iter(spec)
+			self._parse_update()
 		else:
 			raise RuntimeError('%s unsupported' % spec.__class__)
 		return self
@@ -88,24 +90,8 @@ class Announce(object):#{{{
 		return hash(self) == hash(other)
 	#}}}
 
-	def _parse_str(self, string):#{{{
-		self.prepend = list()
-		string = string.replace(',', ' ')
-		while '{' in string:
-			head, _sep, string = string.partition('{')
-			self.prepend.extend(_parse_single_token(t) for t in head.split())
-			head, _sep, string = string.partition('}')
-			asset = frozenset(_parse_single_token(t) for t in head.split())
-			self.prepend.append(asset)
-		self.prepend.extend(_parse_single_token(t) for t in string.split())
-
-		self.prepend = tuple(self.prepend)
-		self._parse_update()
-	#}}}
-
 	def _parse_iter(self, iterable):#{{{
 		self.prepend = tuple(_parse_single_token(t) for t in iterable)
-		self._parse_update()
 	#}}}
 
 	def _parse_update(self):#{{{
@@ -171,6 +157,20 @@ class PrefixAnnounce(dict):#{{{
 		pfxa.close()
 		return pfxa
 	#}}}
+#}}}
+
+
+def parse_as_path_string(string):#{{{
+	prepend = list()
+	string = string.replace(',', ' ')
+	while '{' in string:
+		head, _sep, string = string.partition('{')
+		prepend.extend(_parse_single_token(t) for t in head.split())
+		head, _sep, string = string.partition('}')
+		asset = frozenset(_parse_single_token(t) for t in head.split())
+		prepend.append(asset)
+	prepend.extend(_parse_single_token(t) for t in string.split())
+	return tuple(prepend)
 #}}}
 
 
