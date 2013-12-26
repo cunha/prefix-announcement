@@ -301,6 +301,7 @@ if __name__ == '__main__':
 	test_prefix_announce()
 
 
+
 # 	def consistent(self, route):#{{{
 # 		withdrawn = (0 == sum(0 if WITHDRAWN in a.status else 1 
 # 				for a in self.mux2announce.values()))
