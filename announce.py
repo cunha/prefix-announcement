@@ -143,6 +143,15 @@ class PrefixAnnounce(dict):#{{{
 	#}}}
 
 	@staticmethod
+	def from_mux2str(mux2str):#{{{
+		pfxa = PrefixAnnounce()
+		for mux, string in mux2str.items():
+			pfxa[mux] = Announce(string)
+		pfxa.close()
+		return pfxa
+	#}}}
+
+	@staticmethod
 	def from_str(string):#{{{
 		pfxa = PrefixAnnounce()
 		for entry in string.split(';'):
@@ -318,13 +327,4 @@ if __name__ == '__main__':
 
 
 
-
-# 	@staticmethod
-# 	def from_mux2string(mux2string):#{{{
-# 		pfxa = PrefixAnnounce()
-# 		for mux, string in mux2string.items():
-# 			pfxa[mux] = Announce(string)
-# 		pfxa.close()
-# 		return pfxann
-# 	#}}}
 
