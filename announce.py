@@ -54,7 +54,7 @@ class Announce(object):#{{{
 			self.status = frozenset([ANNOUNCED, NOPREPEND])
 			self.prepend = None
 			self.poisoned = set()
-		elif isinstance(spec, str):
+		elif isinstance(spec, (str, unicode)):
 			self.prepend = parse_as_path_string(spec)
 			self._parse_update()
 		elif isinstance(spec, (tuple, list)):
@@ -191,7 +191,7 @@ def dump_as_path_tuple(tup):#{{{
 #}}}
 
 def _parse_single_token(token):#{{{
-	if isinstance(token, str):
+	if isinstance(token, (str, unicode)):
 		return int(token)
 	if isinstance(token, int):
 		return token
