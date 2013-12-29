@@ -306,29 +306,6 @@ if __name__ == '__main__':
 
 
 
-# 	def consistent(self, route):#{{{
-# 		withdrawn = (0 == sum(0 if WITHDRAWN in a.status else 1 
-# 				for a in self.mux2announce.values()))
-# 
-# 		if route.mux == data.DEFAULT_MUX and withdrawn:
-# 			return True
-# 		if route.mux is None and withdrawn:
-# 			return True
-# 		if route.mux not in self.mux2announce:
-# 			return False
-# 
-# 		muxa = self.mux2announce[route.mux]
-# 		if WITHDRAWN in muxa.status:
-# 			hooks.prefix_announce__consistent__withdrawn(self, route, muxa)
-# 			return False
-# 		if set(route.aspath) & muxa.poisoned:
-# 			hooks.prefix_announce__consistent__trav_poison(self, route)
-# 			# conservative.  IP-to-AS mapping error could be the
-# 			# culprit, but we cannot know.  returning True will
-# 			# confuse the AS preference inference algorithm.
-# 			return False
-# 		return True
-# 	#}}}
 
 
 
