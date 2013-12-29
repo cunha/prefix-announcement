@@ -88,11 +88,7 @@ class Announce(object):#{{{
 
 	def _parse_update(self):#{{{
 		assert self.prepend is not None and len(self.prepend) > 0
-		if self.prepend[-1] != HOMEASN:
-			# self.prepend = list(self.prepend)
-			# self.prepend.append(HOMEASN)
-			# self.prepend = tuple(self.prepend)
-			raise ValueError('path does not start from %s' % HOMEASN)
+		assert self.prepend[-1] == HOMEASN
 
 		self.poisoned = set()
 		for e in self.prepend:
