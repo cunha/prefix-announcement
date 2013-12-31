@@ -88,6 +88,8 @@ class Announce(object):#{{{
 
 	def _parse_update(self):#{{{
 		assert self.prepend is not None and len(self.prepend) > 0
+		if self.prepend[-1] != HOMEASN:
+			self.prepend = tuple(list(self.prepend) + [HOMEASN])
 		assert self.prepend[-1] == HOMEASN
 
 		self.poisoned = set()
@@ -114,6 +116,7 @@ class Announce(object):#{{{
 
 class PrefixAnnounce(dict):#{{{
 	def __init__(self):#{{{
+		super(PrefixAnnounce, self).__init__()
 		self.identifier = None
 	#}}}
 
