@@ -28,6 +28,7 @@ PrefixAnnounce are identical, and functions to dump (load) a
 PrefixAnnounce to (from) a string.'''
 
 HOMEASN = 47065
+MAX_AS_SET_SIZE = 10
 
 WITHDRAWN = 'withdrawn'
 ANNOUNCED = 'announced'
@@ -44,7 +45,7 @@ class Announce(object):#{{{
 		self.poisoned = frozenset()
 		self.__ilshift__(spec)
 	#}}}
-		
+
 	def __ilshift__(self, spec):#{{{
 		if spec == WITHDRAWN:
 			self.status = frozenset([WITHDRAWN])
@@ -99,6 +100,7 @@ class Announce(object):#{{{
 			if isinstance(e, int):
 				self.poisoned.add(e)
 			elif isinstance(e, frozenset):
+				assert len(e) <= MAX_AS_SET_SIZE
 				self.poisoned.update(e)
 			else:
 				raise TypeError('%s unsupported' % e.__class__)
