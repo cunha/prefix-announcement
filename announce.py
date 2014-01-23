@@ -108,7 +108,10 @@ class Announce(object):#{{{
 
 		if self.poisoned:
 			assert len(set(self.prepend)) > 1
-			self.status = frozenset([ANNOUNCED, POISONED])
+			if self.prepend.count(HOMEASN) == 1:
+				self.status = frozenset([ANNOUNCED, POISONED])
+			else:
+				self.status = frozenset([ANNOUNCED, POISONED, PREPENDED])
 		else:
 			assert set(self.prepend) == set([HOMEASN])
 			self.status = frozenset([ANNOUNCED, PREPENDED])
