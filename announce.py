@@ -142,6 +142,12 @@ class PrefixAnnounce(dict):#{{{
 				for m, a in self.items())
 	#}}}
 
+	def is_poisoned(self): # {{{
+		for _m, a in self.items():
+			if POISONED in a.status: return True
+		return False
+	# }}}
+
 	def close(self):#{{{
 		self.identifier = frozenset(self.items())
 	#}}}
